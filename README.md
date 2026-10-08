@@ -193,35 +193,7 @@ curl http://localhost:3000/health
 ```bash
 docker compose up -d --build
 # Open http://localhost:3000
-```
 
----
-
-## 🚀 Pushing This Repository to GitHub
-
-Follow these steps to initialize git and push this project to your GitHub repository:
-
-```bash
-# 1. Initialize Git repository
-git init
-
-# 2. Add all files
-git add .
-
-# 3. Commit the changes
-git commit -m "feat: initial commit - complete Jenkins CI/CD pipeline automation with Docker, GitHub PAT, and Bash"
-
-# 4. Set default branch to main
-git branch -M main
-
-# 5. Link your remote GitHub repository
-git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPO_NAME>.git
-
-# 6. Push to GitHub
-git push -u origin main
-```
-
----
 
 ## 🛡️ Best Practices Implemented
 * ✅ **Non-root Docker execution**: Uses `USER node` for secure container runtime.
