@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD Automated Deployment Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1d;
+            --bg-card: rgba(16, 24, 48, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-blue: #38bdf8;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg-primary) 70%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #34d399;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(16px);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .icon-github { background: #24292e; color: #fff; }
+        .icon-jenkins { background: #d33833; color: #fff; }
+        .icon-docker { background: #0db7ed; color: #fff; }
+        .icon-bash { background: #4eaa25; color: #fff; }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-body p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .status-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            margin-top: 1rem;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            color: var(--accent-blue);
+            word-break: break-all;
+        }
+
+        footer {
+            margin-top: 2.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge-live">
+                <span class="pulse-dot"></span> CI/CD Automated Deployment Active
+            </div>
+            <h1>Automated DevOps Pipeline</h1>
+            <p class="subtitle">Built and deployed automatically with Jenkins, Docker, GitHub, and Bash</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-github">GH</div>
+                    <div class="card-title">GitHub & PAT</div>
+                </div>
+                <div class="card-body">
+                    <p>Source control authentication secured using GitHub Personal Access Token (PAT) with automated webhook triggers.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-jenkins">JK</div>
+                    <div class="card-title">Jenkins CI Pipeline</div>
+                </div>
+                <div class="card-body">
+                    <p>Declarative pipeline executing code quality testing, container builds, and deployment verification stages.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-docker">DK</div>
+                    <div class="card-title">Docker Deployment</div>
+                </div>
+                <div class="card-body">
+                    <p>Automated image packaging with multi-stage builds and isolated container execution on port 3000.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-bash">SH</div>
+                    <div class="card-title">Bash Orchestration</div>
+                </div>
+                <div class="card-body">
+                    <p>Zero-downtime container lifecycle scripts managing stop, prune, start, and health verification workflows.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-box">
+            <div class="status-header">
+                <div class="status-title">Runtime Environment Metadata</div>
+                <span id="health-tag" style="color: var(--accent-green); font-size: 0.85rem; font-weight: 600;">STATUS: HEALTHY</span>
+            </div>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Container Hostname</span>
+                    <span class="meta-value" id="hostname">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">App Version</span>
+                    <span class="meta-value" id="version">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">OS Platform</span>
+                    <span class="meta-value" id="platform">Loading...</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Container Uptime</span>
+                    <span class="meta-value" id="uptime">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Automated CI/CD Delivery Pipeline &bull; Jenkins &bull; Docker &bull; GitHub &bull; Bash
+        </footer>
+    </div>
+
+    <script>
+        async function fetchInfo() {
+            try {
+                const res = await fetch('/api/info');
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('hostname').innerText = data.hostname;
+                    document.getElementById('version').innerText = data.version;
+                    document.getElementById('platform').innerText = data.platform;
+                    document.getElementById('uptime').innerText = data.uptime;
+                }
+            } catch (err) {
+                console.error('Failed to load runtime metadata', err);
+            }
+        }
+        fetchInfo();
+        setInterval(fetchInfo, 5000);
+    </script>
+</body>
+</html>

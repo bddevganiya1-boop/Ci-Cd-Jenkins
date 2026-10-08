@@ -1,0 +1,16 @@
+{
+  "name": "devops-cicd-pipeline-app",
+  "version": "1.0.0",
+  "description": "Production-ready Web Application automated with Jenkins CI/CD, Docker, and GitHub",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node tests/test.js"
+  },
+  "keywords": ["jenkins", "docker", "cicd", "devops", "automation"],
+  "author": "DevOps Engineer",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
